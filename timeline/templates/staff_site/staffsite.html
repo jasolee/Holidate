@@ -1,0 +1,38 @@
+
+{% extends 'timeline/layout_final.html' %}
+
+{% block title %}
+Staff
+{% endblock %}
+
+{% block header %}
+	{% load render_table from django_tables2 %}
+
+	<style>
+		header {
+			background-image: url("static/img/header8.jpg");
+		    min-height: 300px;
+		    height: 300px;
+		}
+	</style>
+
+{% endblock %}
+
+{% block content %}
+
+	<header>
+    </header>
+
+	<form method="post">
+			<center>
+				<button formaction="/delete" type="delete" name="delete" id="delete" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> 삭제</button>
+				<button formaction="/approve" type="submit" name="approve" id="approve" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span>  승인</button>
+			</center>
+			<center>
+				<br>
+				{% csrf_token %}
+		        {% render_table table %}
+		    </center>
+	</form>
+
+{% endblock %}

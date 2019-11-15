@@ -1,0 +1,6 @@
+.bgSizeCover {
+	height: 500px;
+	background-image: url('../img/header.png');
+	background-size: cover;
+	border: 2px solid darkgray;
+	color: #000; text-shadow: 1px 1px 0 #fff;

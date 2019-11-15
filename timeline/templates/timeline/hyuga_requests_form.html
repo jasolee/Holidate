@@ -1,0 +1,45 @@
+{% extends 'request_form/req_layout.html' %}
+
+{% block title %} Request a Break {% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css"> 
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
+<script>
+$(document).ready(function() {
+    $('.datepicker').datepicker();
+});
+</script>
+
+<div class="container">
+    <div class="row">
+        <div class="jumbotron">
+            <h1>Welcome, {{request.user.first_name}}</h1>
+            {% for emp in emp_data %}
+				{% if emp.name == request.user.first_name %}
+					<p>You have {{emp.allowance}} breakdays left</p>
+				{% endif %}
+			{% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class='container'>
+	<h1> Request Form </h1>
+	<form method="post">
+		{% csrf_token %}
+		{{ form.as_p }}
+		<button type='submit'>Submit Request Form</button>
+	</form>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+
+{% endblock %}

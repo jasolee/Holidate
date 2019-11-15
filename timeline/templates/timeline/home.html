@@ -1,0 +1,64 @@
+{% extends 'layout/layout2.html' %}
+
+{% block title %}Break Timeline{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="jumbotron">
+            <h1>Welcome, {{request.user.first_name}}</h1>
+            {% for emp in emp_data %}
+				{% if emp.name == request.user.first_name %}
+					<p>You have {{emp.allowance}} breakdays left</p>
+				{% endif %}
+			{% endfor %}
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<script type="text/javascript">
+  google.charts.load("current", {packages:["timeline"]});
+  google.charts.setOnLoadCallback(drawChart);
+  function drawChart() {
+
+    var container = document.getElementById('example3.1');
+    var chart = new google.visualization.Timeline(container);
+    var dataTable = new google.visualization.DataTable();
+    dataTable.addColumn({ type: 'string', id: 'Position' });
+    dataTable.addColumn({ type: 'string', id: 'Name' });
+    dataTable.addColumn({ type: 'date', id: 'Start' });
+    dataTable.addColumn({ type: 'date', id: 'End' });
+    dataTable.addRows([
+      [ 'Jason', 'Sickness', new Date(2017, 3, 28), new Date(2017, 3, 29) ]]);
+    dataTable.addRows([
+      [ 'Katie', 'Time off', new Date(2017, 3, 21), new Date(2017, 3, 24)],
+      [ 'George', 'Overseas Trip', new Date(2017, 3, 4), new Date(2017, 3, 27)]
+    ]);
+
+	{% for break in break_data %}
+		dataTable.addRows([
+			['{{break.name}}', '{{break.reason}}', new Date({{break.s_date.year}},{{break.s_date.month}},{{break.s_date.day}}), 
+			new Date({{break.e_date.year}},{{break.e_date.month}},{{break.e_date.day}})]]
+		);
+	{% endfor %}
+
+    var options = {
+		haxis: { 
+			format: 'decimal'
+		}
+	}
+
+    chart.draw(dataTable);
+}
+
+</script>
+
+<div id="example3.1" style="height: 300px;"></div>
+
+{% endblock %}
+
+{% block javascript %}
+{% endblock %}

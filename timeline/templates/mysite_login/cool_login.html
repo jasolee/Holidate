@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="eㅏㅐ>
+
+<head>
+    {%load static%}
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Holidate</title>
+
+    <script src="{% static 'jquery/dist/jquery.js' %}"></script>
+
+    <!-- Custom Fonts -->
+    <link href="{% static 'login_page/vendor/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+
+
+    <!-- Bootstrap Core CSS -->
+    <link href="{% static 'login_page/vendor/bootstrap/css/bootstrap.css' %}" rel="stylesheet">
+
+    <!-- Theme CSS -->
+    <link href="{% static 'login_page/css/creative.min.css' %}" rel="stylesheet">
+
+    <!-- Login Modal CSS -->
+    <link href= "{% static 'login_page/css/loginform.css' %}" rel="stylesheet" media="screen">
+
+    <!-- cool css -->
+    <link href="{% static 'login_page/css/cool.css' %}" rel="stylesheet">
+
+</head>
+
+<body id="page-top">
+
+    <style>
+        .modal-backdrop {
+         z-index: -1;
+        }
+    </style>
+
+	<nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span> Menu <i class="fa fa-bars"></i>
+                </button>
+                <a class="navbar-brand page-scroll" href="#page-top">Holidate 2.0</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a class="page-scroll" href="#about"><span class="glyphicon glyphicon-question-sign"></span> 도움</a>
+                    </li>
+                    <li>
+                        <a href="#" data-toggle="modal" data-target="#login-modal"><span class="glyphicon glyphicon-cloud-upload"></span>  로그인</a>
+                        <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+                            <div class="modal-dialog">
+                                <div class="loginmodal-container">
+                                    <center>
+                                        <h3>계정에 로그인하십시오</h3><br>
+                                    </center>
+                                    <form method="post" action="{% url 'login' %}">
+                                        {% csrf_token %}
+                                        <p class="bs-component">
+                                            <center>
+                                                <table>
+                                                    <tr>
+                                                        <td>{{ form.username.label_tag }}</td>
+                                                        <td>{{ form.username }}</span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>{{ form.password.label_tag }}</td>
+                                                        <td>{{ form.password }}</td>
+                                                    </tr>
+                                                </table>
+                                            </center>
+                                        </p>
+                                        <p class="bs-component">
+                                            <center><input class="login loginmodal-submit" type="submit" value="로그인" /></center>
+                                        </p>
+                                        <input type="hidden" name="next" value="{{ next }}" />
+                                    </form>
+                                <div class="login-help">
+                                    <a href="#">Register</a> - <a href="#">Forgot Password</a>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div> 
+        <!-- /.container-fluid -->
+    </nav>
+
+    <div class="aa_sec">
+	  <div class="aa_txt">
+	    <span class="aa_inner">
+	      A <span class="aa_of">Bitcoin</span> Scheduler
+	    </span>
+	  </div>
+	</div>
+
+	<div id="aa_particles"></div>
+
+	<section id="about">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 text-center">
+                    <h2 class="text-faded">Contact Us</h2>
+                    <hr class="light">
+                    <p class="text-faded">Welcome to Coinplug's Blockchain Network</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+	<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script> 
+	<script type="text/javascript">
+		particlesJS("aa_particles", {"particles":{"number":{"value":100,"density":{"enable":true,"value_area":800}},"color":{"value":"#ffffff"},"shape":{"type":"circle","stroke":{"width":0,"color":"#000000"},"polygon":{"nb_sides":5},"image":{"src":"img/github.svg","width":100,"height":100}},"opacity":{"value":0.25,"random":false,"anim":{"enable":false,"speed":1,"opacity_min":0.1,"sync":false}},"size":{"value":3,"random":true,"anim":{"enable":false,"speed":40,"size_min":0.1,"sync":false}},"line_linked":{"enable":true,"distance":150,"color":"#ffffff","opacity":0.3,"width":1},"move":{"enable":true,"speed":5,"direction":"none","random":false,"straight":false,"out_mode":"out","bounce":false,"attract":{"enable":false,"rotateX":600,"rotateY":1200}}},"interactivity":{"detect_on":"canvas","events":{"onhover":{"enable":true,"mode":"repulse"},"onclick":{"enable":true,"mode":"push"},"resize":true},"modes":{"grab":{"distance":400,"line_linked":{"opacity":1}},"bubble":{"distance":400,"size":40,"duration":2,"opacity":8,"speed":3},"repulse":{"distance":200,"duration":0.4},"push":{"particles_nb":4},"remove":{"particles_nb":2}}},"retina_detect":true});var count_particles, stats, update; stats = new Stats; stats.setMode(0); stats.domElement.style.position = 'absolute'; stats.domElement.style.left = '0px'; stats.domElement.style.top = '0px'; document.body.appendChild(stats.domElement); count_particles = document.querySelector('.js-count-particles'); update = function() { stats.begin(); stats.end(); if (window.pJSDom[0].pJS.particles && window.pJSDom[0].pJS.particles.array) { count_particles.innerText = window.pJSDom[0].pJS.particles.array.length; } requestAnimationFrame(update); }; requestAnimationFrame(update);;
+
+	</script>
+
+	<!-- Bootstrap Core JavaScript -->
+    <script src="{% static 'login_page/vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+    <script src="{% static 'login_page/vendor/scrollreveal/scrollreveal.min.js' %}"></script>
+    <script src="{% static 'login_page/vendor/magnific-popup/jquery.magnific-popup.min.js' %}"></script>
+
+    <!-- Theme JavaScript -->
+    <script src="{% static 'login_page/js/creative.min.js' %}"></script>
+</body>

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {%load static%}
+    {% include 'timeline/messages.html' %}
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Holidate</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="{% static 'login_page/vendor/bootstrap/css/bootstrap.css' %}" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="{% static 'login_page/vendor/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+
+    <!-- Plugin CSS -->
+    <link href="{% static 'login_page/vendor/magnific-popup/magnific-popup.css' %}" rel="stylesheet">
+
+    <!-- Theme CSS -->
+    <link href="{% static 'login_page/css/creative.css' %}" rel="stylesheet">
+
+    <!-- Login Modal CSS -->
+    <link href= "{% static 'login_page/css/loginform.css' %}" rel="stylesheet" media="screen">
+
+    <!-- Request Modal CSS -->
+    <link href="{% static 'request_page/css/request_page.css' %}" rel="stylesheet">
+
+
+    <!-- Full Calender Import -->
+    <link href="{% static 'calendar_page/fullcalendar/fullcalendar.min.css' %}" rel="stylesheet">
+    <link href="{% static 'calendar_page/fullcalendar/fullcalendar.print.min.css' %}" rel='stylesheet' media='print'>
+
+    <style>
+        .alert {
+            position: absolute;
+            margin-top:50px;
+        }
+    </style>
+
+
+    <!-- JQuery & Moment Javascript -->
+<!--     <script src="https://code.jquery.com/jquery-1.12.4.js"></script> -->
+    <script src="{% static 'calendar_page/fullcalendar/lib/jquery.min.js' %}"></script>
+    <script src="{% static 'calendar_page/fullcalendar/lib/moment.min.js' %}"></script>
+
+    <!-- date.js Import -->
+    <script src="{% static 'calendar_page/fullcalendar/date.js' %}"></script>
+
+    <!-- google onclick javascript -->
+    <script src="https://apis.google.com/js/client.js?onload=handleClientLoad" type="text/javascript"></script>
+
+
+    <script>
+
+        $(document).ready(function() {
+
+            $('#calendar').fullCalendar({
+                defaultDate: Date.today(),
+                editable: false,
+                googleCalendarApiKey: 'AIzaSyAolS_nHcUPBo2mQJ6PN5fc40zyqOp5d_4',
+                eventLimit: true, // allow "more" link when too many events
+                // events: {
+                //     googleCalendarId: 'eccbt2898b8fk72ab8e7ho380c@group.calendar.google.com'
+                // }
+                eventSources: [
+                    {
+                        googleCalendarId: 'eccbt2898b8fk72ab8e7ho380c@group.calendar.google.com',
+                        color: 'red'
+                    },
+                    {
+                        googleCalendarId: 'en.south_korea#holiday@group.v.calendar.google.com',
+                        color: 'green'
+                    }
+                ]
+            });
+            {% if user.is_superuser %}
+                {% for break in break_data %}
+                    var d = new Date({{break.end_date.year}},{{break.end_date.month}}-1,{{break.end_date.day}});
+                    d.addDays(1);
+
+                    $("#calendar").fullCalendar( 'renderEvent', {title:'{{break.name}}'+'('+'{{break.halfday_setting}}'+')', start:'{{break.start_date}}', end: d, allDay: true}, true )
+                {% endfor %}
+
+                {% for break in past_break_data %}
+                    var d = new Date({{break.end_date.year}},{{break.end_date.month}}-1,{{break.end_date.day}});
+                    d.addDays(1);
+
+                    $("#calendar").fullCalendar( 'renderEvent', {title:'{{break.name}}'+'('+'{{break.halfday_setting}}'+')', start:'{{break.start_date}}', end: d, allDay: true}, true )
+                {% endfor %}
+
+            {% else %}
+                {% for break in break_data %}
+                    {% if break.username == request.user.username %}
+
+                        var d = new Date({{break.end_date.year}},{{break.end_date.month}}-1,{{break.end_date.day}});
+                        d.addDays(1);
+
+                        $("#calendar").fullCalendar( 'renderEvent', {title:'{{break.name}}'+'('+'{{break.halfday_setting}}'+')', start:'{{break.start_date}}', end: d, allDay: true}, true )
+                    {% endif %}
+                {% endfor %}
+
+                {% for break in past_break_data %}
+                    {% if break.username == request.user.username %}
+
+                        var d = new Date({{break.end_date.year}},{{break.end_date.month}}-1,{{break.end_date.day}});
+                        d.addDays(1);
+
+                        $("#calendar").fullCalendar( 'renderEvent', {title:'{{break.name}}'+'('+'{{break.halfday_setting}}'+')', start:'{{break.start_date}}', end: d, allDay: true}, true )
+                    {% endif %}
+                {% endfor %}
+
+            {% endif %}
+
+        });
+
+    </script>
+
+    <style>
+
+        body {
+            margin: 0px 0px;
+            padding: 0;
+            font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+            font-size: 14px;
+        }
+
+        #calendar {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+    </style>
+
+</head>
+
+<body id="page-top">
+
+    <style>
+        .modal-backdrop {
+         z-index: -1;
+        }
+    </style>
+
+    <nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span> Menu <i class="fa fa-bars"></i>
+                </button>
+                <a class="navbar-brand page-scroll" href="#page-top">Holidate 2.0</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a class="page-scroll" href="#timeline"><span class="glyphicon glyphicon-indent-right"></span> Timeline</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#profile"><span class="glyphicon glyphicon-user"></span> Profile</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#request"><span class="glyphicon glyphicon-send"></span> Request</a>
+                    </li>
+                    <li>
+                        <a href="/logout"><span class="glyphicon glyphicon-cloud-download"></span>  Log Out</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div> 
+        <!-- /.container-fluid -->
+    </nav>
+
+    <header>
+        <div class="header-content">
+            <div class="header-content-inner">
+                <h1 id="homeHeading">a Bitcoin Scheduler</h1>
+                <hr>
+                <p>Produced by Coinplug</p>
+            </div>
+        </div>
+        {% for message in messages %}
+            <div class="alert {{ message.tags }} alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                {{ message }}
+            </div>
+        {% endfor %}
+    </header>
+
+    <section id="timeline">
+
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 text-center">
+                    <h2 class="section-heading">The Timeline</h2>
+                    <hr class="light">
+                </div>
+        <div id='calendar'> *Note: Report any errors to an Admin </div>
+<!-- 
+        <button id="btnCreateEvents" class="btn btn-primary" onclick="makeApiCall();">
+                    Create Events</button> -->
+
+<!--         <div id="divifm" align="center">
+            <iframe src="https://calendar.google.com/calendar/embed?title=Coinplug&amp;height=800&amp;wkst=1&amp;bgcolor=%23ffffff&amp;src=dylee.080606%40gmail.com&amp;color=%231B887A&amp;src=en.south_korea%23holiday%40group.v.calendar.google.com&amp;color=%23125A12&amp;ctz=Asia%2FSeoul" style="border:solid 1px #777" width="1000" height="800" frameborder="0" scrolling="no"></iframe>
+        </div>
+        <div id="divifm" align="center">
+            <iframe width='1000' height='700' frameborder='1' src="https://docs.google.com/spreadsheets/d/1S3ekUMQPisisesKNaVaPkQRwmzVCVkQSgptpnPOIYdw/edit?usp=sharing"></iframe>
+        </div> -->
+
+    </section>
+
+    <section id="profile">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="section-heading">Profile</h2>
+                    <hr class="primary">
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 text-center">
+                    <div class="service-box">
+                        <i class="fa fa-4x fa-info-circle text-primary sr-icons"></i>
+                        <h3>About</h3>
+                        <p class="text-muted">Name: {{request.user.last_name}}{{request.user.first_name}}</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 text-center">
+                    <div class="service-box">
+                        <i class="fa fa-4x fa-lemon-o text-primary sr-icons"></i>
+                        <h3>Allowance</h3>
+                        {% for emp in emp_data %}
+                            {% if emp.username == request.user.username %}
+                                <p class="text-muted">
+                                    Total: {{emp.total}} Breakdays
+                                </p>
+                                <p class="text-muted">
+                                    Used: {{emp.used}} Breakdays
+                                </p>
+                                <p class="text-muted">
+                                    You have {{emp.allowance}} Breakdays Left
+                                </p>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 text-center">
+                    <div class="service-box">
+                        <i class="fa fa-4x fa-pie-chart text-primary sr-icons"></i>
+                        <h3>Past Holidays</h3>
+                        {% for past_break in past_break_data %}
+                            {% if past_break.username == request.user.username %}
+                                <p class="text-muted">
+                                    {{ past_break.start_date }} ~ {{ past_break.end_date }}({{ past_break.halfday_setting }}): {{ past_break.reason }}
+                                </p>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 text-center">
+                    <div class="service-box">
+                        <i class="fa fa-4x fa-send text-primary sr-icons"></i>
+                        <h3>Pending Requests</h3>
+                        {% for break_request in request_data %}
+                            {% if break_request.username == request.user.username %}
+                                <p class="text-muted">
+                                    {{ break_request.start_date }} ~ {{ break_request.end_date }}({{ break_request.halfday_setting }}): {{ break_request.reason }}
+                                </p>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% for break_confirmed in confirmed_data %}
+                            {% if break_confirmed.username == request.user.username %}
+                                <p class="text-muted">
+                                    {{ break_confirmed.start_date }} ~ {{ break_confirmed.end_date }}({{ break_confirmed.halfday_setting }}): {{ break_confirmed.reason }}
+                                </p>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <footer id='request'>
+
+        <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css"> 
+        <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+        <script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
+        <script>
+            $(document).ready(function() {
+                $('.datepicker').datepicker();
+            });
+        </script>
+
+        <div class="footer-content">
+            <div class="footer-content-inner">
+                <h1 id="homeHeading">Request a Break</h1>
+                <hr>
+                <a href="#" data-toggle="modal" data-target="#form_modal" class="btn btn-primary btn-xl page-scroll">New Break</a>
+            </div>
+        </div>
+        <div id="form_modal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="requestmodal-container">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h3 class="modal-title"> Request Form </h3>
+                    </div>
+                    <form method="post">
+                        <div class="modal-body">
+                            {% csrf_token %}
+                            {{ form.as_table }}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-default"> Submit </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    {% if user.is_staff %}
+        <section id="staffpage">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2 text-center">
+                        <h2 class="section-heading">Go to Staff Page</h2>
+                        <hr class="primary">
+                        <a href="/staff" class="btn btn-primary btn-xl page-scroll">Staff Page</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    {% endif %}
+
+
+    <!-- jQuery -->
+    <!-- <script src="{% static 'login_page/vendor/jquery/jquery.min.js' %}"></script> -->
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="{% static 'login_page/vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+    <script src="{% static 'login_page/vendor/scrollreveal/scrollreveal.min.js' %}"></script>
+    <script src="{% static 'login_page/vendor/magnific-popup/jquery.magnific-popup.min.js' %}"></script>
+
+    <!-- Theme JavaScript -->
+    <script src="{% static 'login_page/js/creative.min.js' %}"></script>
+
+    <!-- Full Calendar JavaScript -->
+    <script src="{% static 'calendar_page/fullcalendar/fullcalendar.min.js' %}"></script>
+
+    <!-- Google Calendar Javascript -->
+    <script src="{% static 'calendar_page/fullcalendar/gcal.js' %}"></script>
+
+    <script>
+      {% for emp in emp_data %}
+        {% if emp.username == request.user.username %}  
+          window.intercomSettings = {
+            app_id: "we2uz5rp",
+            name: "{{ emp.name|escapejs }}", // Full name
+            email: "{{ request.user.email|escapejs }}", // Email address
+            "allowance": "{{ emp.allowance|escapejs }}", //Allowance
+            "username": "{{ emp.username|escapejs }}", // Username
+            "boss": "{{ emp.boss|escapejs }}" // Boss
+          };
+        {% endif %}
+      {% endfor %}
+    </script>
+    <script>(function(){var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',intercomSettings);}else{var d=document;var i=function(){i.c(arguments)};i.q=[];i.c=function(args){i.q.push(args)};w.Intercom=i;function l(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://widget.intercom.io/widget/we2uz5rp';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);}if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})()</script>
+
+</body>
+
+</html>
+ 

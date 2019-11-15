@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    {%load static%}
+    {% include 'timeline/messages.html' %}
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>{% block title %}{% endblock %}</title>
+
+    <!-- icon -->
+    <link rel="shortcut icon" type="image/ico" href="{% static 'img/favicon.ico' %}"/>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="{% static 'login_page/vendor/bootstrap/css/bootstrap.css' %}" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="{% static 'login_page/vendor/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+
+    <!-- Plugin CSS -->
+    <link href="{% static 'login_page/vendor/magnific-popup/magnific-popup.css' %}" rel="stylesheet">
+
+    <!-- Theme CSS -->
+    <link href="{% static 'login_page/css/creative.css' %}" rel="stylesheet">
+
+    <!-- Login Modal CSS -->
+    <link href= "{% static 'login_page/css/loginform.css' %}" rel="stylesheet" media="screen">
+
+    <!-- Request Modal CSS -->
+    <link href="{% static 'request_page/css/request_page.css' %}" rel="stylesheet">
+
+    <!-- Staff site CSS -->
+    <link rel="stylesheet" href="{% static 'django_tables2/themes/paleblue/css/screen.css' %}" />
+    <link href="{% static 'staff_page/css/background.css' %}" rel="stylesheet">
+
+
+    <!-- Full Calender Import -->
+    <link href="{% static 'calendar_page/fullcalendar/fullcalendar.min.css' %}" rel="stylesheet">
+    <link href="{% static 'calendar_page/fullcalendar/fullcalendar.print.min.css' %}" rel='stylesheet' media='print'>
+
+
+    <style>
+        .alert {
+            position: absolute;
+            margin-top:50px;
+        }
+    </style>
+
+
+    <!-- JQuery & Moment Javascript -->
+<!--     <script src="https://code.jquery.com/jquery-1.12.4.js"></script> -->
+    <script src="{% static 'calendar_page/fullcalendar/lib/jquery.min.js' %}"></script>
+    <script src="{% static 'calendar_page/fullcalendar/lib/moment.min.js' %}"></script>
+
+    <!-- date.js Import -->
+    <script src="{% static 'calendar_page/fullcalendar/date.js' %}"></script>
+
+    <!-- google onclick javascript -->
+    <script src="https://apis.google.com/js/client.js?onload=handleClientLoad" type="text/javascript"></script>
+
+    <style>
+        :disabled {
+            opacity:0.5;
+        }
+        .disabled {
+            opacity:0.5;
+        }
+    </style>
+
+    {% block header %}{% endblock %}
+
+</head>
+<body id="page-top">
+    <nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span> Menu <i class="fa fa-bars"></i>
+                </button>
+                <a class="navbar-brand page-scroll" href="#page-top">Holidate 2.0 </a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a class="page-scroll" href="/"><span class="glyphicon glyphicon-indent-right"></span> 시간표</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="/profile"><span class="glyphicon glyphicon-user"></span> 프로필</a>
+                    </li>
+                    {% if request.user.is_staff %}
+                        <li>
+                            <a class="page-scroll" href="/staff"><span class="glyphicon glyphicon-star"></span> 관리자</a>
+                        </li>
+                    {% endif %}
+                    <li>
+                        <a class="page-scroll" href="#" data-toggle="modal" data-target="#form_modal"><span class="glyphicon glyphicon-send"></span> 휴가요청</a>
+                    </li>
+                    <li>
+                        <a href="/logout"><span class="glyphicon glyphicon-cloud-download"></span>  로그 아웃</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div> 
+        <!-- /.container-fluid -->
+    </nav>
+
+    <link href="{% static 'login_page/css/form_modal.css' %}" rel="stylesheet">
+
+    <style>
+        .modal {
+            background-color:black;
+        }
+        .requestmodal-container {
+            background-color:white;
+        }
+    </style>
+
+    <div id="form_modal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="requestmodal-container">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h3 class="modal-title"> 휴가 신청서 </h3>
+                </div>
+                <form action="/" method="post">
+                    {% csrf_token %}
+                    <ul class="form-style-1">
+                        <li>
+                            <label> 휴가(연차-반차) <span class="required">*</span> </label>
+                            <select name="halfday_setting" id="halfday_setting">
+                                <option value="F">연차</option>
+                                <option value="M">반차-오전</option>
+                                <option value="A">반차-오후</option>
+                            </select>
+                        </li>
+
+                        <li><label>시작 &#9866; 끝 <span class="required">*</span></label><input type="date" name="start_date" class="field-divided" placeholder="First" />&nbsp;<input type="date" name="end_date" id="end_date" class="field-divided" placeholder="Last" /></li>
+                        <li>
+                            <label>이유 <span class="required">*</span></label>
+                            <textarea name="reason" id="reason" class="field-long field-textarea"></textarea>
+                        </li>
+                        <li>
+                            <input type="submit" value="Submit" />
+                        </li>
+                    </ul>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    {% block content %}{% endblock %}
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="{% static 'login_page/vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+    <!-- Plugin JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+    <!-- <script src="{% static 'login_page/vendor/scrollreveal/scrollreveal.min.js' %}"></script> -->
+    <script src="{% static 'login_page/vendor/magnific-popup/jquery.magnific-popup.min.js' %}"></script>
+    <!-- Theme JavaScript -->
+    <script src="{% static 'login_page/js/creative.min.js' %}"></script>
+
+    <!-- Full Calendar JavaScript -->
+    <script src="{% static 'calendar_page/fullcalendar/fullcalendar.min.js' %}"></script>
+
+    <!-- Google Calendar Javascript -->
+    <script src="{% static 'calendar_page/fullcalendar/gcal.js' %}"></script>
+
+    <!-- Link fields in request form -->
+    <script src="{% static 'request_page/js/linkage.js' %}"></script>
+
+    {% block footer %}{% endblock %}
+
+    <script>
+      {% for emp in emp_data %}
+        {% if emp.username == request.user.username %}  
+          window.intercomSettings = {
+            app_id: "we2uz5rp",
+            name: "{{ emp.name|escapejs }}", // Full name
+            email: "{{ request.user.email|escapejs }}", // Email address
+            "allowance": "{{ emp.allowance|escapejs }}", //Allowance
+            "username": "{{ emp.username|escapejs }}", // Username
+            "team": "{{ emp.team|escapejs }}" // Team
+          };
+        {% endif %}
+      {% endfor %}
+    </script>
+    <script>(function(){var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',intercomSettings);}else{var d=document;var i=function(){i.c(arguments)};i.q=[];i.c=function(args){i.q.push(args)};w.Intercom=i;function l(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://widget.intercom.io/widget/we2uz5rp';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);}if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})()</script>
+</body>
+</html>

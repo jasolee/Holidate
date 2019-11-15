@@ -1,0 +1,63 @@
+{% extends 'layout/layout2.html' %}
+
+{% block title %} Request a Break {% endblock %}
+
+{% block extracss %}
+    {{ filter.media['css'] }}
+{% endblock %}
+
+{% block endscripts %}
+    {{ super() }}
+    {{ filter.media['js'] }}
+{% endblock %}
+
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'daterangepicker/daterangepicker.css' %}">
+
+<div class="container">
+    <div class="row">
+        <div class="jumbotron">
+            <h1>Welcome, {{request.user.first_name}}</h1>
+            {% for emp in emp_data %}
+				{% if emp.name == request.user.first_name %}
+					<p>You have {{emp.allowance}} breakdays left</p>
+				{% endif %}
+			{% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class='container'>
+	<h1> Request Form </h1>
+	<form method="post">
+		{% csrf_token %}
+<!-- 		{{ form.as_p }} -->
+		<div class="daterangepicker-container mcast-search-filter">
+			<div class="daterangepicker-label">Date range:</div>
+    			<div id="daterange" class="daterangepicker-content">
+    			<i class="icon-calendar icon-large"></i>
+    			<span></span> <b class="caret"></b>
+    		</div>                                                
+		</div>
+<!-- This is a hidden div that holds your form fields -->
+		<div class="hide">From {{ daterange_form.start_date }} to {{ daterange_form.end_date }}</div>
+
+		<input type="text" name="daterange" value="01/01/2015 - 01/31/2015" />
+		<script type="text/javascript">
+			$(function() {
+    			$('input[name="daterange"]').daterangepicker();
+			});
+		</script>
+
+		<button type='submit'>Submit Request Form</button>
+	</form>
+</div>
+
+{{ filter.range }}
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript" src="{% static 'daterangepicker/moment.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'daterangepicker/daterangepicker.js' %}"></script>
+{% endblock %}
