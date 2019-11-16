@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "g#@(_r@ujpugy0#=n)7$mie$gx&857)_zeo1rd!+pbhp8!myfo"
+SECRET_KEY = "<secret_key>"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -154,8 +154,8 @@ MESSAGE_TAGS = {
     messages.ERROR: 'alert-danger',
 }
 
-EMAIL_HOST = 'smtp.sendgrid.net'
-EMAIL_HOST_USER = 'jasolee'
-EMAIL_HOST_PASSWORD = 'primetime113'
+EMAIL_HOST = '<email_host>'
+EMAIL_HOST_USER = '<username>'
+EMAIL_HOST_PASSWORD = '<password>'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
